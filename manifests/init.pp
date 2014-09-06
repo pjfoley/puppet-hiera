@@ -28,6 +28,14 @@
 #   Group owner of the files.
 #   Default: auto-set, platform specific
 #
+# [*gems*]
+#   Install hiera backends via the gem provider
+#   Default: undef
+#
+# [*packages*]
+#   Install hiera backends via the system default provider
+#   Default: undef
+#
 # [*extra_config*]
 #   An extra string fragment of YAML to append to the config file.
 #   Useful for configuring backend-specific parameters.
@@ -79,6 +87,8 @@ class hiera (
   $datadir       = $hiera::params::datadir,
   $owner         = $hiera::params::owner,
   $group         = $hiera::params::group,
+  $gems          = undef,
+  $packages      = undef,
   $eyaml         = false,
   $eyaml_datadir = $hiera::params::datadir,
   $confdir       = $hiera::params::confdir,
@@ -89,6 +99,23 @@ class hiera (
     group => $group,
     mode  => '0644',
   }
+
+  # Resources managed
+  if $hiera::gems {
+    package { 'hiera.dependancy.gems':
+      ensure  => installed,
+      name    => $hiera::gems,
+      package => 'gem',
+    }
+  }
+
+  if $hiera::packages {
+    package { 'hiera.dependancy.packages':
+      ensure  => installed,
+      name    => $hiera::packages,
+    }
+  }
+
   if $datadir !~ /%\{.*\}/ {
     file { $datadir:
       ensure => directory,
@@ -106,5 +133,5 @@ class hiera (
   file { '/etc/hiera.yaml':
     ensure => symlink,
     target => $hiera_yaml,
-  }  
+  }
 }
