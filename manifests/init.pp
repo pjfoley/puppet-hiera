@@ -10,14 +10,12 @@
 #
 # [*backends*]
 #   Hiera backends.
-#   Default: ['yaml']
+#   Default:
+#     Puppet Enterprise - { 'yaml' => { 'datadir' => '/etc/puppetlabs/puppet/hieradata' }
+#     Open Source       - { 'yaml' => { 'datadir' => '/etc/puppet/hieradata' }
 #
 # [*hiera_yaml*]
 #   Heira config file.
-#   Default: auto-set, platform specific
-#
-# [*datadir*]
-#   Directory in which hiera will start looking for databases.
 #   Default: auto-set, platform specific
 #
 # [*owner*]
@@ -76,7 +74,6 @@ class hiera (
   $hierarchy     = [],
   $backends      = $hiera::params::backends,
   $hiera_yaml    = $hiera::params::hiera_yaml,
-  $datadir       = $hiera::params::datadir,
   $owner         = $hiera::params::owner,
   $group         = $hiera::params::group,
   $eyaml         = false,
@@ -89,11 +86,11 @@ class hiera (
     group => $group,
     mode  => '0644',
   }
-  if $datadir !~ /%\{.*\}/ {
-    file { $datadir:
-      ensure => directory,
-    }
-  }
+  #  if $datadir !~ /%\{.*\}/ {
+  #    file { $datadir:
+  #      ensure => directory,
+  #    }
+  #  }
   if $eyaml {
     require hiera::eyaml
   }
@@ -106,5 +103,5 @@ class hiera (
   file { '/etc/hiera.yaml':
     ensure => symlink,
     target => $hiera_yaml,
-  }  
+  }
 }

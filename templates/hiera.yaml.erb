@@ -1,6 +1,6 @@
 ---
 :backends:
-<%= @backends.to_yaml.split("\n")[1..-1].join("\n") %>
+<%= @backends.keys.to_yaml.split("\n")[1..-1].join("\n") %>
 <% if @eyaml -%>
   - eyaml
 <% end -%>
@@ -8,8 +8,12 @@
 :hierarchy:
 <%= @hierarchy.to_yaml.split("\n")[1..-1].join("\n") %>
 
-:yaml:
-   :datadir: <%= @datadir %>
+<% @backends.each_pair do |backend_name,config| -%>
+:<%= backend_name %>:
+<% config.sort_by { |key,value| key.to_s}.each do |key,calue| -%>
+  :<%= key %>: <%= value %>
+<% end -%>
+<% end -%>
 
 <% if @eyaml %>
 :eyaml:
