@@ -10,7 +10,7 @@
 
 <% @backends.each_pair do |backend_name,config| -%>
 :<%= backend_name %>:
-<% config.sort_by { |key,value| key.to_s}.each do |key,calue| -%>
+<% config.sort_by { |key,value| key.to_s}.each do |key,value| -%>
   :<%= key %>: <%= value %>
 <% end -%>
 <% end -%>
