@@ -1,10 +1,10 @@
 class Hash
   def find_datadirs
     result = []
-    result << self['datadirs']
-    result << self[':datadirs']
-    result << self['datadirs:']
-    result << self[':datadirs:']
+    result << self['datadir']
+    result << self[':datadir']
+    result << self['datadir:']
+    result << self[':datadir:']
     self.values.each do |hash_value|
       values = [hash_value] unless hash_value.is_a? Array
       values.each do |value|
