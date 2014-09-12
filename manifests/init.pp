@@ -102,17 +102,15 @@ class hiera (
 
   # Resources managed
   if $hiera::gems {
-    package { 'hiera.dependancy.gems':
+    package { $hiera::gems:
       ensure  => installed,
-      name    => $hiera::gems,
       package => 'gem',
     }
   }
 
   if $hiera::packages {
-    package { 'hiera.dependancy.packages':
+    package { $hiera::packages:
       ensure  => installed,
-      name    => $hiera::packages,
     }
   }
 
