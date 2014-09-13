@@ -86,11 +86,10 @@ class hiera (
     group => $group,
     mode  => '0644',
   }
-  #  if $datadir !~ /%\{.*\}/ {
-  #    file { $datadir:
-  #      ensure => directory,
-  #    }
-  #  }
+  $datadirs = datadirs($backends) 
+  file { $datadirs:
+    ensure => directory,
+  }
   if $eyaml {
     require hiera::eyaml
   }
