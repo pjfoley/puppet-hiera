@@ -91,7 +91,7 @@ class hiera (
     ensure => directory,
   }
   if $eyaml {
-    require hiera::eyaml
+    require hiera::backend::eyaml
   }
   # Template uses $hierarchy, $datadir
   file { $hiera_yaml:

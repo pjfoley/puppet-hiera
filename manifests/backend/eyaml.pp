@@ -10,7 +10,7 @@
 #
 # Copyright (C) 2014 Terri Haber, unless otherwise noted.
 #
-class hiera::eyaml (
+class hiera::backend::eyaml (
   $backends = $hiera::params::eyaml_backends,
   $provider = $hiera::params::provider,
   $owner    = $hiera::params::owner,
