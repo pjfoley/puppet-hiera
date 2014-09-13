@@ -31,13 +31,9 @@
 #   Useful for configuring backend-specific parameters.
 #   Default: ''
 #
-# [*eyaml*]
-#   Install and configure hiera-eyaml
-#   Default: false
-#
-# [*eyaml_datadir*]
-#   Location of eyaml-specific data
-#   Default: Same as datadir
+# [*no_backend*]
+#   Do these backend classes
+#   Default: ['file']
 #
 # === Actions:
 #
@@ -63,12 +59,14 @@
 # Hunter Haugen <h.haugen@gmail.com>
 # Mike Arnold <mike@razorsedge.org>
 # Terri Haber <terri@puppetlabs.com>
+# Peter Foley <peter@ifoley.id.au>
 #
 # === Copyright:
 #
 # Copyright (C) 2012 Hunter Haugen, unless otherwise noted.
 # Copyright (C) 2013 Mike Arnold, unless otherwise noted.
 # Copyright (C) 2014 Terri Haber, unless otherwise noted.
+# Copyright (C) 2014 Peter Foley, unless otherwise noted.
 #
 class hiera (
   $hierarchy     = [],
@@ -76,11 +74,13 @@ class hiera (
   $hiera_yaml    = $hiera::params::hiera_yaml,
   $owner         = $hiera::params::owner,
   $group         = $hiera::params::group,
-  $eyaml         = false,
-  $eyaml_datadir = $hiera::params::datadir,
+  $no_backend    = $hiera::params::no_backend,
   $confdir       = $hiera::params::confdir,
   $extra_config  = '',
 ) inherits hiera::params {
+
+  validate_hash($backends)
+
   File {
     owner => $owner,
     group => $group,
@@ -90,10 +90,23 @@ class hiera (
   file { $datadirs:
     ensure => directory,
   }
-  if $eyaml {
-    require hiera::backend::eyaml
+
+  # Extract hash keys and remove backends the user does not want managed
+  # Allow the user to pass either a string or an array.
+  if is_array($no_backend) {
+    $keys = difference(keys($backends), $no_backend)
   }
-  # Template uses $hierarchy, $datadir
+  else {
+    $keys = delete(keys($backends), $no_backend)
+  }
+
+  hiera::load_backend{$keys :
+    backends => $backends,
+    owner    => $owner,
+    group    => $group,
+  }
+
+  # Template uses $hierarchy, $backends
   file { $hiera_yaml:
     ensure  => present,
     content => template('hiera/hiera.yaml.erb'),

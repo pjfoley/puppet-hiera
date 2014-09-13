@@ -33,4 +33,5 @@ class hiera::params {
     $cmdpath    = '/usr/bin/puppet'
     $confdir    = '/etc/puppet'
   }
+  $no_backend   = ['file']
 }

@@ -11,7 +11,11 @@
 # Copyright (C) 2014 Peter Foley, unless otherwise noted.
 #
 class hiera::backend::file (
+  $backends = undef,
   $provider = $hiera::params::provider,
+  $owner    = $hiera::params::owner,
+  $group    = $hiera::params::group,
+  $cmdpath  = $hiera::params::cmdpath,
 ) inherits hiera::params {
 
   package { 'hiera-file':
