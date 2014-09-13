@@ -17,6 +17,7 @@ class hiera::params {
   if $::puppetversion =~ /Puppet Enterprise/ {
     $hiera_yaml = '/etc/puppetlabs/puppet/hiera.yaml'
     $backends   = { 'yaml' => { 'datadir' => '/etc/puppetlabs/puppet/hieradata' } }
+    $eyaml_backend   = {"eyaml" => {"datadir"  => "/root/dev/bar", "pkcs7_private_key"   => "/etc/puppetlabs/puppet/keys/private_key.pkcs7.pem", "pkcs7_public_key" =>"/etc/puppetlabs/puppet/keys/public_key.pkcs7.pem"}}
     $owner      = 'pe-puppet'
     $group      = 'pe-puppet'
     $provider   = 'pe_gem'
@@ -25,6 +26,7 @@ class hiera::params {
   } else {
     $hiera_yaml = '/etc/puppet/hiera.yaml'
     $backends   = { 'yaml' => { 'datadir' => '/etc/puppet/hieradata' } }
+    $eyaml_backend   = {"eyaml" => {"datadir"  => "/root/dev/bar", "pkcs7_private_key"   => "/etc/puppet/keys/private_key.pkcs7.pem", "pkcs7_public_key" =>"/etc/puppet/keys/public_key.pkcs7.pem"}}
     $owner      = 'puppet'
     $group      = 'puppet'
     $provider   = 'gem'
