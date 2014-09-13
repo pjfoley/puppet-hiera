@@ -1,4 +1,4 @@
-# == Class: hiera::eyaml
+# == Class: hiera::backend::eyaml
 #
 # This class installs and configures hiera-eyaml
 #
