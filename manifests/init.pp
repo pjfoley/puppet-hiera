@@ -10,14 +10,12 @@
 #
 # [*backends*]
 #   Hiera backends.
-#   Default: ['yaml']
+#   Default:
+#     Puppet Enterprise - { 'yaml' => { 'datadir' => '/etc/puppetlabs/puppet/hieradata' }
+#     Open Source       - { 'yaml' => { 'datadir' => '/etc/puppet/hieradata' }
 #
 # [*hiera_yaml*]
 #   Heira config file.
-#   Default: auto-set, platform specific
-#
-# [*datadir*]
-#   Directory in which hiera will start looking for databases.
 #   Default: auto-set, platform specific
 #
 # [*owner*]
@@ -33,13 +31,9 @@
 #   Useful for configuring backend-specific parameters.
 #   Default: ''
 #
-# [*eyaml*]
-#   Install and configure hiera-eyaml
-#   Default: false
-#
-# [*eyaml_datadir*]
-#   Location of eyaml-specific data
-#   Default: Same as datadir
+# [*no_backend*]
+#   Do these backend classes
+#   Default: ['file']
 #
 # [*logger*]
 #   Configure a valid hiera logger
@@ -75,41 +69,56 @@
 # Hunter Haugen <h.haugen@gmail.com>
 # Mike Arnold <mike@razorsedge.org>
 # Terri Haber <terri@puppetlabs.com>
+# Peter Foley <peter@ifoley.id.au>
 #
 # === Copyright:
 #
 # Copyright (C) 2012 Hunter Haugen, unless otherwise noted.
 # Copyright (C) 2013 Mike Arnold, unless otherwise noted.
 # Copyright (C) 2014 Terri Haber, unless otherwise noted.
+# Copyright (C) 2014 Peter Foley, unless otherwise noted.
 #
 class hiera (
-  $hierarchy      = [],
-  $backends       = $hiera::params::backends,
-  $hiera_yaml     = $hiera::params::hiera_yaml,
-  $datadir        = $hiera::params::datadir,
-  $owner          = $hiera::params::owner,
-  $group          = $hiera::params::group,
-  $eyaml          = false,
-  $eyaml_datadir  = $hiera::params::datadir,
-  $confdir        = $hiera::params::confdir,
+  $hierarchy     = [],
+  $backends      = $hiera::params::backends,
+  $hiera_yaml    = $hiera::params::hiera_yaml,
+  $owner         = $hiera::params::owner,
+  $group         = $hiera::params::group,
+  $no_backend    = $hiera::params::no_backend,
+  $confdir       = $hiera::params::confdir,
   $logger         = $hiera::params::logger,
   $merge_behavior = undef,
-  $extra_config   = '',
+  $extra_config  = '',
 ) inherits hiera::params {
+
+  validate_hash($backends)
+
   File {
     owner => $owner,
     group => $group,
     mode  => '0644',
   }
-  if $datadir !~ /%\{.*\}/ {
-    file { $datadir:
-      ensure => directory,
-    }
+  $datadirs = datadirs($backends) 
+  file { $datadirs:
+    ensure => directory,
   }
-  if $eyaml {
-    require hiera::eyaml
+
+  # Extract hash keys and remove backends the user does not want managed
+  # Allow the user to pass either a string or an array.
+  if is_array($no_backend) {
+    $keys = difference(keys($backends), $no_backend)
   }
-  # Template uses $hierarchy, $datadir
+  else {
+    $keys = delete(keys($backends), $no_backend)
+  }
+
+  hiera::load_backend{$keys :
+    backends => $backends,
+    owner    => $owner,
+    group    => $group,
+  }
+
+  # Template uses $hierarchy, $backends
   file { $hiera_yaml:
     ensure  => present,
     content => template('hiera/hiera.yaml.erb'),
@@ -118,5 +127,5 @@ class hiera (
   file { '/etc/hiera.yaml':
     ensure => symlink,
     target => $hiera_yaml,
-  }  
+  }
 }
