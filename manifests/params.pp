@@ -33,7 +33,6 @@ class hiera::params {
     $cmdpath    = '/usr/bin/puppet'
     $confdir    = '/etc/puppet'
   }
-  $backends     = ['yaml']
   $logger       = 'console'
   $no_backend   = ['file']
 }
