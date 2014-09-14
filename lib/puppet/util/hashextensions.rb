@@ -1,5 +1,5 @@
 class Hash
-  def hash_value(key)
+  def extract_hashvalues(key)
     result = []
     Array(key).each do |v|
       [v, ":"+v].each do |x|
@@ -10,10 +10,14 @@ class Hash
     self.values.each do |hv|
       values = [hv] unless hv.is_a? Array
       values.each do |value|
-        result += value.hash_value(key) if value.is_a? Hash
+        result += value.extract_hashvalues(key) if value.is_a? Hash
       end
     end
     result.compact
+  end
+
+  def extract_subhash(*extract)
+    self.select { |k| Array(extract).include?(k) }
   end
 end
 

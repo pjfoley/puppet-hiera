@@ -18,8 +18,8 @@ class hiera::backend::eyaml (
   $cmdpath  = $hiera::params::cmdpath,
 ) inherits hiera::params {
 
-  $priv_key = datadirs($backends, 'pkcs7_private_key')
-  $eyaml_files = datadirs($backends, ['pkcs7_private_key', '[pkcs7_public_key'])
+  $priv_key = extract_hashvalues($backends, 'pkcs7_private_key')
+  $eyaml_files = extract_hashvalues($backends, ['pkcs7_private_key', '[pkcs7_public_key'])
   $keys_dir = dirname($priv_key)
 
   package { 'hiera-eyaml':

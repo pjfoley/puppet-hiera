@@ -5,7 +5,7 @@ define hiera::load_backend (
 ) {
   validate_hash($backends)
 
-  $backend_hash = hash_value($backends, $title)
+  $backend_hash = extract_subhash($backends, $title)
 
   if defined( "hiera::backend::${title}") {
     class {"hiera::backend::${title}":

@@ -1,4 +1,4 @@
-require File.expand_path('../../../util/hash_value', __FILE__)
+require File.expand_path('../../../util/hashextensions', __FILE__)
 
 module Puppet::Parser::Functions
   newfunction(:datadirs, :type => :rvalue, :doc => <<-EOS
@@ -16,6 +16,6 @@ module Puppet::Parser::Functions
                  raise(Puppet::ParseError, 'datadirs(): Requires a hash to work with')
                end
 
-               backends.hash_value('datadir').uniq
+               backends.extract_hashvalues('datadir').uniq
   end
 end
