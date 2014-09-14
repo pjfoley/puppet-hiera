@@ -16,6 +16,6 @@ module Puppet::Parser::Functions
                  raise(Puppet::ParseError, 'datadirs(): Requires a hash to work with')
                end
 
-               backends.extract_hashvalues('datadir').uniq
+               backends.extract_hashvalues('datadir').uniq.map {|x| x.to_s.split('%%').first}
   end
 end
