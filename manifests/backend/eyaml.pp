@@ -20,7 +20,7 @@ class hiera::backend::eyaml (
 
   $priv_key = extract_hashvalues($backends, 'pkcs7_private_key')
   $eyaml_files = extract_hashvalues($backends, ['pkcs7_private_key', '[pkcs7_public_key'])
-  $keys_dir = dirname($priv_key)
+  $keys_dir = dirname($priv_key[0])
 
   package { 'hiera-eyaml':
     ensure   => installed,
