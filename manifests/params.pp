@@ -31,7 +31,7 @@ class hiera::params {
     $group      = 'puppet'
     $provider   = 'gem'
     #    $cmdpath    = '/usr/bin/puppet'
-    $cmdpath    = '/usr/local/bin/eyaml'
+    $cmdpath    = '/usr/local/bin'
     $confdir    = '/etc/puppet'
   }
   $no_backend   = ['file']
