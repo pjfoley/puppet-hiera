@@ -5,7 +5,6 @@ module Puppet::Parser::Functions
               Returns an array of unique datadirs found from the passed in hash.
               EOS
              ) do |arguments|
-               Puppet::Parser::Functions.autoloader.loadall
 
                raise(Puppet::ParseError, "datadirs(): Wrong number of arguments " +
                      "given (#{arguments.size} for 1)") if arguments.size < 1

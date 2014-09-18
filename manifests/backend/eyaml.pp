@@ -11,16 +11,26 @@
 # Copyright (C) 2014 Terri Haber, unless otherwise noted.
 #
 class hiera::backend::eyaml (
-  $backends = $hiera::params::eyaml_backends,
-  $provider = $hiera::params::provider,
-  $owner    = $hiera::params::owner,
-  $group    = $hiera::params::group,
-  $cmdpath  = $hiera::params::cmdpath,
+  $backends            = $hiera::params::eyaml_backends,
+  $provider            = $hiera::params::provider,
+  $private_key_content = undef,
+  $public_key_content  = undef,
+  $owner               = $hiera::params::owner,
+  $group               = $hiera::params::group,
+  $cmdpath             = undef,
 ) inherits hiera::params {
 
+  if $cmdpath { validate_absolute_path($cmdpath) }
+  validate_hash($backends)
+
   $priv_key = extract_hashvalues($backends, 'pkcs7_private_key')
+  $pub_key = extract_hashvalues($backends, 'pkcs7_public_key')
   $eyaml_files = extract_hashvalues($backends, ['pkcs7_private_key', '[pkcs7_public_key'])
-  $keys_dir = dirname($priv_key[0])
+  $keys_dir = keysdir($priv_key[0])
+
+  if ! $cmdpath {
+    $cmdpath = findeyamlcmdpath()
+  }
 
   package { 'hiera-eyaml':
     ensure   => installed,
@@ -33,23 +43,45 @@ class hiera::backend::eyaml (
     owner  => $owner,
     group  => $group,
     mode   => '0500',
-    before => Exec['createkeys'],
   }
 
-  exec { 'createkeys':
-    user    => $owner,
-    cwd     => $keys_dir,
-    command => 'eyaml createkeys',
-    path    => $cmdpath,
-    creates => $priv_key,
-    require => Package['hiera-eyaml'],
+  if $private_key_content {
+      file { $priv_key:
+        ensure  => file,
+        content => $private_key_content,
+        mode    => '0400',
+        owner   => $owner,
+        group   => $group,
+        require => File['eyaml_keys.dir'],
+      }
+      file { $pub_key:
+        ensure  => file,
+        content => $public_key_content,
+        mode    => '0400',
+        owner   => $owner,
+        group   => $group,
+        require => File['eyaml_keys.dir'],
+      }
   }
+  else {
+    File['eyaml_keys.dir']
+    {
+      before => Exec['createkeys'],
+    }
+      exec { 'createkeys':
+        cwd     => $keys_dir,
+        command => 'eyaml createkeys',
+        path    => $cmdpath,
+        creates => $priv_key,
+        require => Package['hiera-eyaml'],
+      }
 
-  file { $eyaml_files:
-    ensure  => file,
-    mode    => '0400',
-    owner   => $owner,
-    group   => $group,
-    require => Exec['createkeys'],
+      file { $eyaml_files:
+        ensure  => file,
+        mode    => '0400',
+        owner   => $owner,
+        group   => $group,
+        require => Exec['createkeys'],
+      }
   }
 }
