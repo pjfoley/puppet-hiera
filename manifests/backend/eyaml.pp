@@ -69,11 +69,12 @@ class hiera::backend::eyaml (
       before => Exec['createkeys'],
     }
       exec { 'createkeys':
-        cwd     => $keys_dir,
-        command => 'eyaml createkeys',
-        path    => $cmdpath,
-        creates => $priv_key,
-        require => Package['hiera-eyaml'],
+        cwd       => $keys_dir,
+        command   => 'eyaml createkeys',
+        path      => $cmdpath,
+        creates   => $priv_key,
+        logoutput => true,
+        require   => Package['hiera-eyaml'],
       }
 
       file { $eyaml_files:
