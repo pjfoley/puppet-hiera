@@ -28,9 +28,6 @@ class hiera::backend::eyaml (
   $eyaml_files = extract_hashvalues($backends, ['pkcs7_private_key', '[pkcs7_public_key'])
   $keys_dir = keysdir($priv_key[0])
 
-  if ! $cmdpath {
-    $cmdpath = findeyamlcmdpath()
-  }
 
   package { 'hiera-eyaml':
     ensure   => installed,
@@ -68,21 +65,24 @@ class hiera::backend::eyaml (
     {
       before => Exec['createkeys'],
     }
-      exec { 'createkeys':
-        cwd       => $keys_dir,
-        command   => 'eyaml createkeys',
-        path      => $cmdpath,
-        creates   => $priv_key,
-        logoutput => true,
-        require   => Package['hiera-eyaml'],
-      }
+    if ! $cmdpath {
+      $cmdpath = findeyamlcmdpath()
+    }
+    exec { 'createkeys':
+      cwd       => $keys_dir,
+      command   => 'eyaml createkeys',
+      path      => $cmdpath,
+      creates   => $priv_key,
+      logoutput => true,
+      require   => Package['hiera-eyaml'],
+    }
 
-      file { $eyaml_files:
-        ensure  => file,
-        mode    => '0400',
-        owner   => $owner,
-        group   => $group,
-        require => Exec['createkeys'],
-      }
+    file { $eyaml_files:
+      ensure  => file,
+      mode    => '0400',
+      owner   => $owner,
+      group   => $group,
+      require => Exec['createkeys'],
+    }
   }
 }
