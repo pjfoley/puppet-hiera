@@ -17,10 +17,10 @@ class hiera::backend::eyaml (
   $public_key_content  = undef,
   $owner               = $hiera::params::owner,
   $group               = $hiera::params::group,
-  $cmdpath             = undef,
+  $cmdpath             = $hiera::params::cmdpath,
 ) inherits hiera::params {
 
-  if $cmdpath { validate_absolute_path($cmdpath) }
+  validate_absolute_path($cmdpath)
   validate_hash($backends)
 
   $priv_key = extract_hashvalues($backends, 'pkcs7_private_key')
@@ -67,16 +67,10 @@ class hiera::backend::eyaml (
     {
       before => Exec['createkeys'],
     }
-    if ! $cmdpath {
-      $real_cmdpath = findeyamlcmdpath()
-    }
-    else {
-      $real_cmdpath = $cmdpath
-    }
     exec { 'createkeys':
       cwd       => $keys_dir,
       command   => 'eyaml createkeys',
-      path      => $real_cmdpath,
+      path      => $cmdpath,
       creates   => $priv_key,
       logoutput => true,
       require   => Package['hiera-eyaml'],
