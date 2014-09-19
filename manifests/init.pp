@@ -98,7 +98,7 @@ class hiera (
     group => $group,
     mode  => '0644',
   }
-  $datadirs = datadirs($backends) 
+  $datadirs = datadirs($backends)
   file { $datadirs:
     ensure => directory,
   }
