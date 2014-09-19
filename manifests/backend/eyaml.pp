@@ -51,13 +51,15 @@ class hiera::backend::eyaml (
         group   => $group,
         require => File['eyaml_keys.dir'],
       }
-      file { $pub_key:
-        ensure  => file,
-        content => $public_key_content,
-        mode    => '0400',
-        owner   => $owner,
-        group   => $group,
-        require => File['eyaml_keys.dir'],
+      if $public_key_content {
+        file { $pub_key:
+          ensure  => file,
+          content => $public_key_content,
+          mode    => '0400',
+          owner   => $owner,
+          group   => $group,
+          require => File['eyaml_keys.dir'],
+        }
       }
   }
   else {
@@ -66,12 +68,15 @@ class hiera::backend::eyaml (
       before => Exec['createkeys'],
     }
     if ! $cmdpath {
-      $cmdpath = findeyamlcmdpath()
+      $real_cmdpath = findeyamlcmdpath()
+    }
+    else {
+      $real_cmdpath = $cmdpath
     }
     exec { 'createkeys':
       cwd       => $keys_dir,
       command   => 'eyaml createkeys',
-      path      => $cmdpath,
+      path      => $real_cmdpath,
       creates   => $priv_key,
       logoutput => true,
       require   => Package['hiera-eyaml'],
