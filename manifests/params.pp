@@ -35,5 +35,5 @@ class hiera::params {
     $confdir    = '/etc/puppet'
   }
   $logger       = 'console'
-  $no_backend   = ['file']
+  $no_backend   = ['yaml','file']
 }
