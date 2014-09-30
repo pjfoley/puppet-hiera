@@ -7,23 +7,19 @@
 :logger: <%= @logger %>
 :hierarchy:
 <%= @hierarchy.to_yaml.split("\n")[1..-1].join("\n") %>
-
 <% @backends.each_pair do |backend_name,config| -%>
 :<%= backend_name %>:
 <% config.sort_by { |key,value| key.to_s}.each do |key,value| -%>
   :<%= key %>: <%= value %>
 <% end -%>
 <% end -%>
-
 <% if @eyaml %>
 :eyaml:
    :datadir: <%= @eyaml_datadir %>
    :pkcs7_private_key: <%= @confdir %>/keys/private_key.pkcs7.pem
    :pkcs7_public_key:  <%= @confdir %>/keys/public_key.pkcs7.pem
-<% end %>
-
+<% end -%>
 <% if @merge_behavior -%>
 :merge_behavior: <%= @merge_behavior -%>
 <% end -%>
-
-<%= @extra_config %>
+<%= @extra_config -%>
