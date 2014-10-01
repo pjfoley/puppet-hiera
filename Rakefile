@@ -1,3 +1,8 @@
+require 'rubygems'
+require 'puppetlabs_spec_helper/rake_tasks'
+require 'puppet_blacksmith/rake_tasks'
+require 'puppet-lint/tasks/puppet-lint'
+require 'puppet-syntax/tasks/puppet-syntax'
 require 'rake/clean'
 
 # Get module name from directory name; strip "puppet-" prefix.
@@ -35,11 +40,6 @@ end
 CLEAN.include(MANIFESTS_PATH, MODULES_PATH, 'doc', 'pkg')
 CLOBBER.include('.tmp', '.librarian')
 
-require 'puppetlabs_spec_helper/rake_tasks'
-require 'puppet_blacksmith/rake_tasks'
-
-require 'puppet-lint/tasks/puppet-lint'
-require 'puppet-syntax/tasks/puppet-syntax'
 
 PuppetLint.configuration.log_format = "%{path}:%{linenumber}:%{check}:%{KIND}:%{message}"
 PuppetLint.configuration.send('disable_80chars')
