@@ -4,10 +4,6 @@ end
 
 $LOAD_PATH.unshift File.join(proj_dir, 'lib')
 
-module PuppetSpec
-  FIXTURE_DIR = File.join(proj_dir, 'fixtures') unless defined?(FIXTURE_DIR)
-end
-
 require 'puppet'
 require 'rspec-puppet'
 require 'puppetlabs_spec_helper/module_spec_helper'
