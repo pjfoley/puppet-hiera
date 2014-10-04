@@ -16,7 +16,7 @@ module Puppet::Parser::Functions
                  raise(Puppet::ParseError, 'extract_subhash(): Requires the first argument to be a hash')
                end
 
-               unless extract.is_a?(String) || (extract.is_a?(Array) && arr_all_strings?(extract))
+               unless extract.is_a?(String)
                  raise(Puppet::ParseError, 'extract_subhash(): Requires the second argument to be a string or array of strings')
                end
 

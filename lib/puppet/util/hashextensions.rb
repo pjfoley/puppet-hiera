@@ -17,7 +17,7 @@ class Hash
   end
 
   def extract_subhash(*extract)
-    self.select { |k| Array(extract).flatten.include?(k) }
+    self.select { |k| Array(extract).include?(k) }
   end
 end
 
