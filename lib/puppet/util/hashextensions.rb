@@ -17,7 +17,15 @@ class Hash
   end
 
   def extract_subhash(*extract)
-    self.select { |k| Array(extract).include?(k) }
+    self.select { |k| Array(extract).flatten.include?(k) }
+  end
+end
+
+def arr_all_strings?(val)
+  if val.is_a?(Array)
+    val.all? { |row| row.is_a? String }
+  else
+    false
   end
 end
 
