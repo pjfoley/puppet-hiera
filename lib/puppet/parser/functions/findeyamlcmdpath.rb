@@ -1,6 +1,6 @@
 module Puppet::Parser::Functions
   newfunction(:findeyamlcmdpath, :type => :rvalue, :doc => <<-EOS
-              Returns the vin directory the hiera-eyaml eyaml executabe is located in
+              Returns the bin directory the hiera-eyaml eyaml executabe is located in
               EOS
              ) do |arguments|
                if not Gem::Specification.find_all_by_name("hiera-eyaml").empty?
