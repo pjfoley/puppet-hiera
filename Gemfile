@@ -18,10 +18,13 @@ group :development, :test do
   gem 'puppetlabs_spec_helper',  :require => false
   gem 'puppet-lint',             :require => false
   gem 'puppet-syntax',           :require => false
-  gem 'puppet-blacksmith',       :require => false
   gem 'pry',                     :require => false
   gem 'simplecov',               :require => false
   gem 'beaker-rspec',            :require => false
+end
+
+group :development do
+  gem 'puppet-blacksmith',       :require => false
 end
 
 ENV['GEM_PUPPET_VERSION'] ||= ENV['PUPPET_GEM_VERSION']
