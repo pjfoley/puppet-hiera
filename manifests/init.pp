@@ -6,30 +6,29 @@
 #
 # [*hierarchy*]
 #   Hiera hierarchy.
+#   Expects a array
 #   Default: empty
 #
 # [*backends*]
 #   Hiera backends.
-#   Default: ['yaml']
+#   Expects a hash
+#   Default:
+#     Puppet Enterprise - { 'yaml' => ['yaml'] { 'datadir' => '/etc/puppetlabs/puppet/hieradata' }
+#     Open Source       - { 'yaml' => ['yaml'] { 'datadir' => '/etc/puppet/hieradata' }
 #
 # [*hiera_yaml*]
 #   Heira config file.
+#   Expects a string
 #   Default: auto-set, platform specific
-#
-# [*datadir*]
-#   Directory in which hiera will start looking for databases.
-#   Default: auto-set, platform specific
-#
-# [*datadir_manage*]
-#   Enables creating $datadir directory
-#   Default: true
 #
 # [*owner*]
 #   Owner of the files.
+#   Expects a string
 #   Default: auto-set, platform specific
 #
 # [*group*]
 #   Group owner of the files.
+#   Expects a string
 #   Default: auto-set, platform specific
 #
 # [*extra_config*]
@@ -37,25 +36,20 @@
 #   Useful for configuring backend-specific parameters.
 #   Default: ''
 #
-# [*eyaml*]
-#   Install and configure hiera-eyaml
-#   Default: false
-#
-# [*eyaml_datadir*]
-#   Location of eyaml-specific data
-#   Default: Same as datadir
-#
-# [*eyaml_extension*]
-#   File extension for eyaml backend
-#   Default: undef, use backend default
+# [*no_backend*]
+#   Do not use the modules autoload capability for these classes
+#   Expects an array
+#   Default: empty
 #
 # [*logger*]
 #   Configure a valid hiera logger
+#   Expects a string
 #   Note: You need to manage any package/gem dependancies
 #   Default: console
 #
 # [*merge_behavior*]
 #   Configure hiera merge behavior.
+#   Expects a string
 #   Note: You need to manage any package/gem dependancies
 #   Default: native
 #
@@ -63,11 +57,11 @@
 #
 # Installs either /etc/puppet/hiera.yaml or /etc/puppetlabs/puppet/hiera.yaml.
 # Links /etc/hiera.yaml to the above file.
-# Creates $datadir (if $datadir_manage == true).
+# Creates $datadir directories based on passed in backends hash
 #
 # === Requires:
 #
-# Nothing.
+# puppetlabs/stdlib
 #
 # === Sample Usage:
 #
@@ -76,6 +70,17 @@
 #       '%{environment}',
 #       'common',
 #     ],
+#     backends               => {
+#       'eyaml'              => {
+#         'datadir'          => '/etc/puppet/hieradata'
+#         'extension'        => 'yaml'
+#         'pkcs7_private_key => '/etc/puppet/keys/private_key.pkcs7.pem'
+#         'pkcs7_public_key  => '/etc/puppet/keys/public_key.pkcs7.pem'
+#       }
+#       'yaml'               => {
+#         'datadir'          => '/etc/puppet/hieradata'
+#       }
+#     }
 #   }
 #
 # === Authors:
